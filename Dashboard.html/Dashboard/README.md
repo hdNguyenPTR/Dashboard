@@ -2,10 +2,8 @@
 
 > Admin dashboard based on black dashboard UI template + vue-router
 
-This project is a vue version of [Black Dashboard PRO](https://demos.creative-tim.com/marketplace/black-dashboard-pro/examples/dashboard.html)
+This project is an internal Dashboard for David & Golyat using [Black Dashboard PRO](https://demos.creative-tim.com/marketplace/black-dashboard-pro/examples/dashboard.html)
 designed for vue js. The dashboard includes Bootstrap 4, vue-router, chart.js, google-maps and several other plugins/components. 
-
-Check the [Live Demo here](http://demos.creative-tim.com/vue-black-dashboard-pro).
 
 ## [Documentation](http://demos.creative-tim.com/vue-black-dashboard-pro/documentation)
 
