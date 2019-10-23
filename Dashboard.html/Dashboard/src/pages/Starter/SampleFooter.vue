@@ -1,32 +1,15 @@
 <template>
   <footer class="footer">
     <div class="container-fluid">
-      <ul class="nav">
+      <!-- <ul class="nav">
         <li class="nav-item">
-          <a
-            href="https://example.com"
-            target="_blank"
-            rel="noopener"
-            class="nav-link"
-          >
-            Link
-          </a>
+          <a href="https://example.com" target="_blank" rel="noopener" class="nav-link">Link</a>
         </li>
         <li class="nav-item">
-          <a
-            href="https://example.com"
-            target="_blank"
-            rel="noopener"
-            class="nav-link"
-          >
-            Another Link
-          </a>
+          <a href="https://example.com" target="_blank" rel="noopener" class="nav-link">Another Link</a>
         </li>
-      </ul>
-      <div class="copyright">
-        &copy; {{ year }}, made with <i class="tim-icons icon-heart-2"></i> for
-        a better web.
-      </div>
+      </ul>-->
+      <div class="copyright">&copy; {{ year }}, David & Golyat Management Inc.</div>
     </div>
   </footer>
 </template>
