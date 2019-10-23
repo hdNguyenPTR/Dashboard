@@ -1,4 +1,4 @@
-# [Vue Black Dashboard PRO](https://github.com/creativetimofficial/ct-vue-black-bootstrap-dashboard-pro) [![version][version-badge]][CHANGELOG] [![license][license-badge]][LICENSE]
+# [David & Golyat Dashboard](https://github.com/creativetimofficial/ct-vue-black-bootstrap-dashboard-pro) [![version][version-badge]][CHANGELOG] [![license][license-badge]][LICENSE]
 
 > Admin dashboard based on black dashboard UI template + vue-router
 

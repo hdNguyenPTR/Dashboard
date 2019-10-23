@@ -24,8 +24,8 @@ export default {
     minimizeSidebar() {
       // Remove this code if you don't want to display notifications while minimizing sidebar
       let isMinimizedText = this.$sidebar.isMinimized
-        ? 'deactivated'
-        : 'activated';
+        ? 'activated'
+        : 'deactivated';
       this.$notify({
         type: 'primary',
         message: `Sidebar mini ${isMinimizedText}...`,

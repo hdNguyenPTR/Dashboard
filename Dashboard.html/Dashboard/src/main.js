@@ -20,7 +20,7 @@ import DashboardPlugin from './plugins/dashboard-plugin';
 import App from './App.vue';
 
 // router setup
-import router from './routes/router';
+import router from './routes/starterRouter';
 import i18n from './i18n';
 import './registerServiceWorker'
 // plugin setup
