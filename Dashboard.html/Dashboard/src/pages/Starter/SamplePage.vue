@@ -17,7 +17,6 @@
                       type="checkbox"
                       id="accounts_checkbox"
                       v-model="selectAccounts"
-                      :checked="selectAccounts"
                       @change="selectAllAccounts()"
                     />
                     <label class="ml-2" for="accounts_checkbox">All</label>
@@ -32,7 +31,6 @@
                     v-model="accounts_select.multiple"
                     collapse-tags
                     filterable
-                    @change="selectAnAccount($event)"
                   >
                     <el-option
                       v-for="option in accounts_select.options"
@@ -55,7 +53,6 @@
                       type="checkbox"
                       id="accounts_checkbox"
                       v-model="selectCampaigns"
-                      :checked="selectCampaigns"
                       @change="selectAllCampaigns()"
                     />
                     <label class="ml-2" for="campaign_checkbox">All</label>
@@ -289,27 +286,27 @@ export default {
       });
     },
     selectAllAccounts() {
+      let selected_option = this.accounts_select.options;
+      let multiple_value = this.accounts_select.multiple;
       if (this.selectAccounts == true) {
-        this.accounts_select.options.forEach(function(options, index) {
-          options.selected = true;
+        selected_option.forEach((option) => {
+          multiple_value.push(option.value.toString())
         });
       } else {
-        this.accounts_select.options.forEach(function(options, index) {
-          options.selected = false;
-        });
+        multiple_value.splice(0, multiple_value.length)
       }
     },
-    selectAnAccount(event) {
-      let options = this.accounts_select.options;
-      event.forEach(function(value) {
-        console.log(options);
-        // this.accounts_select.options[value].selected = !this.accounts_select
-        //   .options["value"].selected;
-      });
-      console.log(event);
-      //   this.accounts_select.options;
-    },
-    selectAllCampaigns() {}
+    selectAllCampaigns() {
+      let selected_option = this.campaigns_select.options;
+      let multiple_value = this.campaigns_select.multiple;
+      if (this.selectCampaigns == true) {
+        selected_option.forEach((option) => {
+          multiple_value.push(option.value.toString())
+        });
+      } else {
+        multiple_value.splice(0, multiple_value.length)
+      }
+    }
   },
   computed: {
     bigLineChartCategories() {
@@ -319,7 +316,7 @@ export default {
         { name: "CPP", icon: "", fields: "cpp" },
         { name: "CTR", icon: "", fields: "ctr" }
       ];
-    }
+    },
   },
   mounted() {
     this.fetchAllAccountsAndCampaignsFromFacebookApi();
