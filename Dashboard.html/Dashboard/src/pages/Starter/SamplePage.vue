@@ -32,6 +32,7 @@
                     collapse-tags
                     filterable
                     @focus="checkIfAllAccountsSelected()"
+                    @focusout="getAllCampaignsFromSelectedAccounts()"
                   >
                     <el-option
                       v-for="option in accounts_select.options"
@@ -196,6 +197,17 @@ export default {
   },
   data() {
     return {
+      checkboxes: {
+        first: false,
+        second: false,
+        a: false,
+        b: false,
+        c: false,
+        unchecked: false,
+        checked: true,
+        disabledUnchecked: false,
+        disabledChecked: true
+      },
       selectedAccounts: {},
       selectedCampaigns: {},
       selectAccounts: false,
@@ -288,10 +300,14 @@ export default {
       });
     },
     selectAllAccounts() {
+      //method to select all accounts
       let selected_option = this.accounts_select.options;
       let multiple_value = this.accounts_select.multiple;
+
+      //condition to check if the select all accounts checkbox is checked
       if (this.selectAccounts == true) {
         selected_option.forEach(option => {
+          //check if the account is already selected
           if (!multiple_value.includes(option.value.toString())) {
             multiple_value.push(option.value.toString());
           }
@@ -332,6 +348,9 @@ export default {
       } else {
         this.selectCampaigns = false;
       }
+    },
+    getAllCampaignsFromSelectedAccounts() {
+      console.log(this.accounts_select.multiple);
     }
   },
   computed: {
