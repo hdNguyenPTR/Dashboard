@@ -30,6 +30,8 @@
                     v-model="accounts_select.multiple"
                     collapse-tags
                     filterable
+                    @focus="checkIfAllAccountsSelected()"
+                    @focusout="getAllCampaignsFromSelectedAccounts()"
                   >
                     <el-option
                       v-for="option in accounts_select.options"
@@ -52,7 +54,6 @@
                       type="checkbox"
                       id="accounts_checkbox"
                       v-model="selectCampaigns"
-                      :checked="selectCampaigns"
                       @change="selectAllCampaigns()"
                     />
                     <label class="ml-2" for="campaign_checkbox">All</label>
@@ -66,6 +67,7 @@
                     v-model="campaigns_select.multiple"
                     collapse-tags
                     filterable
+                    @focus="checkIfAllCampaignsSelected()"
                   >
                     <el-option
                       v-for="option in campaigns_select.options"
@@ -194,6 +196,17 @@ export default {
   },
   data() {
     return {
+      checkboxes: {
+        first: false,
+        second: false,
+        a: false,
+        b: false,
+        c: false,
+        unchecked: false,
+        checked: true,
+        disabledUnchecked: false,
+        disabledChecked: true
+      },
       selectedAccounts: {},
       selectedCampaigns: {},
       selectAccounts: false,
@@ -286,20 +299,58 @@ export default {
       });
     },
     selectAllAccounts() {
-      var bool = this.selectAccounts;
+      //method to select all accounts
+      let selected_option = this.accounts_select.options;
+      let multiple_value = this.accounts_select.multiple;
 
-      let selected_options = this.accounts_select.multiple;
-      let all_options = this.accounts_select.options;
-
-      if (bool == true) {
-        all_options.forEach(function(option) {
-          selected_options.push(option.value.toString());
+      //condition to check if the select all accounts checkbox is checked
+      if (this.selectAccounts == true) {
+        selected_option.forEach(option => {
+          //check if the account is already selected
+          if (!multiple_value.includes(option.value.toString())) {
+            multiple_value.push(option.value.toString());
+          }
         });
       } else {
-        selected_options.splice(0, selected_options.length);
+        multiple_value.splice(0, multiple_value.length);
       }
     },
-    selectAllCampaigns() {}
+    selectAllCampaigns() {
+      let selected_option = this.campaigns_select.options;
+      let multiple_value = this.campaigns_select.multiple;
+      if (this.selectCampaigns == true) {
+        selected_option.forEach(option => {
+          if (!multiple_value.includes(option.value.toString())) {
+            multiple_value.push(option.value.toString());
+          }
+        });
+      } else {
+        multiple_value.splice(0, multiple_value.length);
+      }
+    },
+    checkIfAllAccountsSelected() {
+      let multiple_value = this.accounts_select.multiple;
+      let all_options = this.accounts_select.options;
+
+      if (multiple_value.length == all_options.length) {
+        this.selectAccounts = true;
+      } else {
+        this.selectAccounts = false;
+      }
+    },
+    checkIfAllCampaignsSelected() {
+      let multiple_value = this.campaigns_select.multiple;
+      let all_options = this.campaigns_select.options;
+
+      if (multiple_value.length == all_options.length) {
+        this.selectCampaigns = true;
+      } else {
+        this.selectCampaigns = false;
+      }
+    },
+    getAllCampaignsFromSelectedAccounts() {
+      console.log(this.accounts_select.multiple);
+    }
   },
   computed: {
     bigLineChartCategories() {
