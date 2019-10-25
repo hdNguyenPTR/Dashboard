@@ -8,16 +8,14 @@
           <card>
             <div class="row">
               <div class="col-lg-6 col-md-12 col-12">
+                <label for>Choose Account</label>
                 <div class="d-flex">
-                  <div class>
-                    <label for>Choose Account</label>
-                  </div>
+                  <div class></div>
                   <div class="ml-auto">
                     <input
                       type="checkbox"
                       id="accounts_checkbox"
                       v-model="selectAccounts"
-                      :checked="selectAccounts"
                       @change="selectAllAccounts()"
                     />
                     <label class="ml-2" for="accounts_checkbox">All</label>
@@ -32,7 +30,6 @@
                     v-model="accounts_select.multiple"
                     collapse-tags
                     filterable
-                    @change="selectAnAccount($event)"
                   >
                     <el-option
                       v-for="option in accounts_select.options"
@@ -289,25 +286,18 @@ export default {
       });
     },
     selectAllAccounts() {
-      if (this.selectAccounts == true) {
-        this.accounts_select.options.forEach(function(options, index) {
-          options.selected = true;
+      var bool = this.selectAccounts;
+
+      let selected_options = this.accounts_select.multiple;
+      let all_options = this.accounts_select.options;
+
+      if (bool == true) {
+        all_options.forEach(function(option) {
+          selected_options.push(option.value.toString());
         });
       } else {
-        this.accounts_select.options.forEach(function(options, index) {
-          options.selected = false;
-        });
+        selected_options.splice(0, selected_options.length);
       }
-    },
-    selectAnAccount(event) {
-      let options = this.accounts_select.options;
-      event.forEach(function(value) {
-        console.log(options);
-        // this.accounts_select.options[value].selected = !this.accounts_select
-        //   .options["value"].selected;
-      });
-      console.log(event);
-      //   this.accounts_select.options;
     },
     selectAllCampaigns() {}
   },
