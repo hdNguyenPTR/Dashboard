@@ -17,6 +17,7 @@
                       id="accounts_checkbox"
                       v-model="selectAccounts"
                       @change="selectAllAccounts()"
+                      inline
                     />
                     <label class="ml-2" for="accounts_checkbox">All</label>
                   </div>
