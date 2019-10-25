@@ -31,6 +31,7 @@
                     v-model="accounts_select.multiple"
                     collapse-tags
                     filterable
+                    @focus="checkIfAllAccountsSelected()"
                   >
                     <el-option
                       v-for="option in accounts_select.options"
@@ -66,6 +67,7 @@
                     v-model="campaigns_select.multiple"
                     collapse-tags
                     filterable
+                    @focus="checkIfAllCampaignsSelected()"
                   >
                     <el-option
                       v-for="option in campaigns_select.options"
@@ -289,22 +291,46 @@ export default {
       let selected_option = this.accounts_select.options;
       let multiple_value = this.accounts_select.multiple;
       if (this.selectAccounts == true) {
-        selected_option.forEach((option) => {
-          multiple_value.push(option.value.toString())
+        selected_option.forEach(option => {
+          if (!multiple_value.includes(option.value.toString())) {
+            multiple_value.push(option.value.toString());
+          }
         });
       } else {
-        multiple_value.splice(0, multiple_value.length)
+        multiple_value.splice(0, multiple_value.length);
       }
     },
     selectAllCampaigns() {
       let selected_option = this.campaigns_select.options;
       let multiple_value = this.campaigns_select.multiple;
       if (this.selectCampaigns == true) {
-        selected_option.forEach((option) => {
-          multiple_value.push(option.value.toString())
+        selected_option.forEach(option => {
+          if (!multiple_value.includes(option.value.toString())) {
+            multiple_value.push(option.value.toString());
+          }
         });
       } else {
-        multiple_value.splice(0, multiple_value.length)
+        multiple_value.splice(0, multiple_value.length);
+      }
+    },
+    checkIfAllAccountsSelected() {
+      let multiple_value = this.accounts_select.multiple;
+      let all_options = this.accounts_select.options;
+
+      if (multiple_value.length == all_options.length) {
+        this.selectAccounts = true;
+      } else {
+        this.selectAccounts = false;
+      }
+    },
+    checkIfAllCampaignsSelected() {
+      let multiple_value = this.campaigns_select.multiple;
+      let all_options = this.campaigns_select.options;
+
+      if (multiple_value.length == all_options.length) {
+        this.selectCampaigns = true;
+      } else {
+        this.selectCampaigns = false;
       }
     }
   },
@@ -316,7 +342,7 @@ export default {
         { name: "CPP", icon: "", fields: "cpp" },
         { name: "CTR", icon: "", fields: "ctr" }
       ];
-    },
+    }
   },
   mounted() {
     this.fetchAllAccountsAndCampaignsFromFacebookApi();
