@@ -28,6 +28,7 @@ import "./registerServiceWorker";
 Vue.use(DashboardPlugin);
 Vue.use(VueRouter);
 Vue.use(RouterPrefetch);
+Vue.use(require("vue-moment"));
 
 /* eslint-disable no-new */
 new Vue({

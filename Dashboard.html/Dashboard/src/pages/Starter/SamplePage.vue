@@ -4,10 +4,26 @@
       <h3 class="card-title">Facebook API</h3>
 
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-lg-8 col-md-12 col-12">
           <card>
             <div class="row">
-              <div class="col-6">
+              <div class="col-lg-6 col-md-12 col-12">
+                <div class="d-flex">
+                  <div class>
+                    <label for>Choose Account</label>
+                  </div>
+                  <div class="ml-auto">
+                    <input
+                      type="checkbox"
+                      id="accounts_checkbox"
+                      v-model="selectAccounts"
+                      :checked="selectAccounts"
+                      @change="selectAllAccounts()"
+                    />
+                    <label class="ml-2" for="accounts_checkbox">All</label>
+                  </div>
+                </div>
+
                 <base-input>
                   <el-select
                     multiple
@@ -15,20 +31,36 @@
                     size="large"
                     v-model="accounts_select.multiple"
                     collapse-tags
-                    placeholder="Select Account"
+                    filterable
+                    @change="selectAnAccount($event)"
                   >
                     <el-option
                       v-for="option in accounts_select.options"
-                      class="select-info"
+                      v-bind:class="{'selected':option.selected}"
                       :value="option.value"
                       :label="option.label"
-                      :key="option.label"
+                      v-bind:key="option.id"
                     ></el-option>
                   </el-select>
                 </base-input>
               </div>
 
-              <div class="col-6">
+              <div class="col-lg-6 col-md-12 col-12">
+                <div class="d-flex">
+                  <div class>
+                    <label for>Choose Campaign</label>
+                  </div>
+                  <div class="ml-auto">
+                    <input
+                      type="checkbox"
+                      id="accounts_checkbox"
+                      v-model="selectCampaigns"
+                      :checked="selectCampaigns"
+                      @change="selectAllCampaigns()"
+                    />
+                    <label class="ml-2" for="campaign_checkbox">All</label>
+                  </div>
+                </div>
                 <base-input>
                   <el-select
                     multiple
@@ -36,14 +68,14 @@
                     size="large"
                     v-model="campaigns_select.multiple"
                     collapse-tags
-                    placeholder="Select Campaign"
+                    filterable
                   >
                     <el-option
                       v-for="option in campaigns_select.options"
                       class="select-info"
                       :value="option.value"
                       :label="option.label"
-                      :key="option.label"
+                      :key="option.id"
                     ></el-option>
                   </el-select>
                 </base-input>
@@ -52,7 +84,7 @@
           </card>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-lg-4 col-md-12 col-12">
           <card>
             <div class="row">
               <div class="col-md-6 col-12">
@@ -78,7 +110,7 @@
           <div class="col-md-6 col-12"></div>
 
           <div class="col-md-6 col-12">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
               <label
                 v-for="(option, index) in bigLineChartCategories"
                 :key="option.name"
@@ -123,8 +155,9 @@ import config from "@/config";
 import * as firebase from "firebase";
 
 let bigChartData = [];
-
 let bigChartLabels = [];
+let accounts = [];
+let campaigns = [];
 
 let bigChartDatasetOptions = {
   fill: true,
@@ -151,9 +184,9 @@ var firebaseConfig = {
   appId: "1:724027350638:web:edfa9d0604cc4ef921d07f",
   measurementId: "G-85YPZ0NVLW"
 };
-
 firebase.initializeApp(firebaseConfig);
-      
+let insightsRef = firebase.database().ref("insights");
+
 export default {
   name: "starter-page",
   components: {
@@ -162,9 +195,12 @@ export default {
     [Option.name]: Option,
     [Select.name]: Select
   },
-
   data() {
     return {
+      selectedAccounts: {},
+      selectedCampaigns: {},
+      selectAccounts: false,
+      selectCampaigns: false,
       bigLineChart: {
         activeIndex: 0,
         chartData: {
@@ -186,12 +222,12 @@ export default {
       accounts_select: {
         simple: "",
         multiple: "ARS",
-        options: [{ value: "All Accounts", label: "All Accounts" }]
+        options: []
       },
       campaigns_select: {
         simple: "",
         multiple: "ARS",
-        options: [{ value: "All Campaigns", label: "All Campaigns" }]
+        options: []
       }
     };
   },
@@ -210,6 +246,70 @@ export default {
       this.bigLineChart.chartData = chartData;
       this.bigLineChart.activeIndex = index;
     },
+    fetchAllAccountsAndCampaignsFromFacebookApi() {
+      insightsRef.once("value").then(snapshot => {
+        let list = [];
+
+        snapshot.forEach(childSnapshot => {
+          //get the random generated id
+          var key = childSnapshot.key;
+
+          //get the data inside object
+          var values = snapshot.child(childSnapshot.key).val();
+
+          //loop to get all the
+          var accounts = [];
+          var campaigns = [];
+
+          values.data.forEach(key => {
+            accounts.push({
+              id: key.account_id,
+              label: key.account_name,
+              value: key.account_id,
+              selected: false
+            });
+            campaigns.push({
+              id: key.campaign_id,
+              label: key.campaign_name,
+              value: key.campaign_id,
+              selected: false
+            });
+          });
+          this.accounts_select.options = this.removeDuplicateId(accounts, "id");
+          this.campaigns_select.options = this.removeDuplicateId(
+            campaigns,
+            "id"
+          );
+        });
+      });
+    },
+    removeDuplicateId(myArr, prop) {
+      return myArr.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+      });
+    },
+    selectAllAccounts() {
+      if (this.selectAccounts == true) {
+        this.accounts_select.options.forEach(function(options, index) {
+          options.selected = true;
+        });
+      } else {
+        this.accounts_select.options.forEach(function(options, index) {
+          options.selected = false;
+        });
+      }
+    },
+    selectAnAccount(event) {
+      let options = this.accounts_select.options;
+      event.forEach(function(value) {
+        console.log(options);
+        // this.accounts_select.options[value].selected = !this.accounts_select
+        //   .options["value"].selected;
+      });
+      console.log(event);
+      //   this.accounts_select.options;
+    },
+    selectAllCampaigns() {}
   },
   computed: {
     bigLineChartCategories() {
@@ -222,63 +322,62 @@ export default {
     }
   },
   mounted() {
-    var insightsRef = firebase.database().ref("insights");
+    this.fetchAllAccountsAndCampaignsFromFacebookApi();
+    insightsRef.once("value").then(snapshot => {
+      let list = [];
 
-      insightsRef.once("value").then((snapshot) => {
-        let list = [];
+      snapshot.forEach(childSnapshot => {
+        //get the random generated id
+        var key = childSnapshot.key;
 
-        snapshot.forEach((childSnapshot) => {
-          //get the random generated id
-          var key = childSnapshot.key;
+        //get the data inside object
+        var values = snapshot.child(childSnapshot.key).val();
 
-          //get the data inside object
-          var values = snapshot.child(childSnapshot.key).val();
+        //loop to get all the
+        var cpc = [];
+        var cpm = [];
+        var cpp = [];
+        var ctr = [];
+        var label = [];
+        var accounts = [];
+        var campaigns = [];
 
-          //loop to get all the
-          var cpc = [];
-          var cpm = [];
-          var cpp = [];
-          var ctr = [];
-          var label = [];
+        values.data.forEach((key, value) => {
+          if (key.cpc !== undefined) cpc.push(parseFloat(key.cpc));
+          else {
+            cpc.push(parseFloat(0));
+          }
 
-          values.data.forEach((key, value) => {
-            if (key.cpc !== undefined) cpc.push(parseFloat(key.cpc));
-            else {
-              cpc.push(parseFloat(0));
-            }
+          if (key.cpm !== undefined) cpm.push(parseFloat(key.cpm));
+          else {
+            cpm.push(parseFloat(0));
+          }
 
-            if (key.cpm !== undefined) cpm.push(parseFloat(key.cpm));
-            else {
-              cpm.push(parseFloat(0));
-            }
+          if (key.cpp !== undefined) cpp.push(parseFloat(key.cpp));
+          else {
+            cpp.push(parseFloat(0));
+          }
 
-            if (key.cpp !== undefined) cpp.push(parseFloat(key.cpp));
-            else {
-              cpp.push(parseFloat(0));
-            }
-
-            if (key.ctr !== undefined) ctr.push(parseFloat(key.ctr));
-            else {
-              ctr.push(parseFloat(0));
-            }
-            var date_start = key.date_start.toString();
-            var date_stop = key.date_stop.toString();
-            label.push(
-              key.date_start.toString() + " - " + key.date_stop.toString()
-            );
-          });
-
-          bigChartData.push(cpc);
-          bigChartData.push(cpm);
-          bigChartData.push(cpp);
-          bigChartData.push(ctr);
-          bigChartLabels = label;
+          if (key.ctr !== undefined) ctr.push(parseFloat(key.ctr));
+          else {
+            ctr.push(parseFloat(0));
+          }
+          var date_start = key.date_start.toString();
+          var date_stop = key.date_stop.toString();
+          label.push(
+            key.date_start.toString() + " - " + key.date_stop.toString()
+          );
         });
-        this.initBigChart(0);
-      });
 
-    
-  },
+        bigChartData.push(cpc);
+        bigChartData.push(cpm);
+        bigChartData.push(cpp);
+        bigChartData.push(ctr);
+        bigChartLabels = label;
+      });
+      this.initBigChart(0);
+    });
+  }
 };
 </script>
 <style></style>
