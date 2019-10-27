@@ -2,10 +2,9 @@
   <div class="row">
     <div class="col-12">
       <h3 class="card-title">Facebook API</h3>
-
-      <div class="row">
-        <div class="col-lg-8 col-md-12 col-12">
-          <card>
+      <card>
+        <div class="row">
+          <div class="col-lg-8 col-md-12 col-12">
             <div class="row">
               <div class="col-lg-6 col-md-12 col-12">
                 <div class="d-flex">
@@ -31,8 +30,7 @@
                     v-model="accounts_select.multiple"
                     collapse-tags
                     filterable
-                    @focus="checkIfAllAccountsSelected()"
-                    @focusout="getAllCampaignsFromSelectedAccounts()"
+                    @blur="onSelectAccountOnFocus(true)"
                   >
                     <el-option
                       v-for="option in accounts_select.options"
@@ -81,27 +79,33 @@
                 </base-input>
               </div>
             </div>
-          </card>
-        </div>
-
-        <div class="col-lg-4 col-md-12 col-12">
-          <card>
+          </div>
+          <div class="col-lg-3 col-md-12 col-12">
             <div class="row">
               <div class="col-md-6 col-12">
+                <label for>Start Date</label>
                 <base-input>
-                  <el-date-picker type="date" placeholder="Start Date" v-model="start_date"></el-date-picker>
+                  <el-date-picker type="date" placeholder="Select Date" v-model="start_date"></el-date-picker>
                 </base-input>
               </div>
 
               <div class="col-md-6 col-12">
+                <label for>End Date</label>
                 <base-input>
-                  <el-date-picker type="date" placeholder="End Date" v-model="end_date"></el-date-picker>
+                  <el-date-picker type="date" placeholder="Selects Date" v-model="end_date"></el-date-picker>
                 </base-input>
               </div>
             </div>
-          </card>
+          </div>
+
+          <div class="col-lg-1 col-md-12 col-12">
+            <label for></label>
+            <base-button type="primary" class="btn-block">
+              <i class="tim-icons icon-refresh-02"></i>
+            </base-button>
+          </div>
         </div>
-      </div>
+      </card>
     </div>
 
     <div class="col-12">
@@ -148,7 +152,7 @@
   </div>
 </template>
 <script>
-import { TimeSelect, DatePicker, Select, Option } from "element-ui";
+import { TimeSelect, DatePicker, Select, Option, Button } from "element-ui";
 import LineChart from "@/components/Charts/LineChart";
 import * as chartConfigs from "@/components/Charts/config";
 import config from "@/config";
@@ -193,21 +197,12 @@ export default {
     LineChart,
     [DatePicker.name]: DatePicker,
     [Option.name]: Option,
-    [Select.name]: Select
+    [Select.name]: Select,
+    Button
   },
   data() {
     return {
-      checkboxes: {
-        first: false,
-        second: false,
-        a: false,
-        b: false,
-        c: false,
-        unchecked: false,
-        checked: true,
-        disabledUnchecked: false,
-        disabledChecked: true
-      },
+      select_account_has_focus: false,
       selectedAccounts: {},
       selectedCampaigns: {},
       selectAccounts: false,
@@ -286,6 +281,7 @@ export default {
               selected: false
             });
           });
+
           this.accounts_select.options = this.removeDuplicateId(accounts, "id");
           this.campaigns_select.options = this.removeDuplicateId(
             campaigns,
@@ -300,6 +296,7 @@ export default {
       });
     },
     selectAllAccounts() {
+      console.log(this.select_account_has_focus);
       //method to select all accounts
       let selected_option = this.accounts_select.options;
       let multiple_value = this.accounts_select.multiple;
@@ -351,6 +348,12 @@ export default {
     },
     getAllCampaignsFromSelectedAccounts() {
       console.log(this.accounts_select.multiple);
+    },
+    onSelectAccountOnFocus(bool) {
+      console.log(bool);
+      if (bool == false) {
+        console.log("focus out");
+      }
     }
   },
   computed: {
