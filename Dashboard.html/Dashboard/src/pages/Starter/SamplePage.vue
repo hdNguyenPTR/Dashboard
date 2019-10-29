@@ -523,12 +523,14 @@ export default {
 
             this.campaigns_select.multiple.forEach(campaign_id => {
               values.data.forEach((key, value) => {
-                var campaign_date_start = new Date(key.date_start);
-                var campaign_date_stop = new Date(key.date_stop);
+                var campaign_date_start = new Date(
+                  new Date(key.date_start).toDateString()
+                );
+                var campaign_date_stop = new Date(
+                  new Date(key.date_stop).toDateString()
+                );
 
                 if (campaign_id == key.campaign_id) {
-                  console.log(campaign_date_start + " - " + campaign_date_stop);
-                  console.log(date_start + " - " + date_end);
                   if (
                     campaign_date_start >= date_start &&
                     campaign_date_stop <= date_end
@@ -598,6 +600,7 @@ export default {
             });
             console.log(metrics);
             //add to chart data
+            console.log(this.bigLineChart.chartData.datasets);
           });
         });
       }
