@@ -131,7 +131,7 @@
 
     <div class="col-12">
       <card type="chart">
-        <div class="row pl-1 pr-1">
+        <div class="row pl-2 pr-2 mb-2">
           <div class="col-md-6 col-12"></div>
 
           <div class="col-md-6 col-12">
@@ -178,6 +178,7 @@ import LineChart from "@/components/Charts/LineChart";
 import * as chartConfigs from "@/components/Charts/config";
 import config from "@/config";
 import * as firebase from "firebase";
+import { firebaseConfig } from "./config";
 
 let bigChartData = [];
 let bigChartLabels = [];
@@ -199,17 +200,9 @@ let bigChartDatasetOptions = {
   pointRadius: 4
 };
 
-var firebaseConfig = {
-  apiKey: "AIzaSyA4BHgsOPKoctSbTCShfhEV3em-ACTFtW8",
-  authDomain: "rising-symbol-256704.firebaseapp.com",
-  databaseURL: "https://rising-symbol-256704.firebaseio.com",
-  projectId: "rising-symbol-256704",
-  storageBucket: "rising-symbol-256704.appspot.com",
-  messagingSenderId: "724027350638",
-  appId: "1:724027350638:web:edfa9d0604cc4ef921d07f",
-  measurementId: "G-85YPZ0NVLW"
-};
+//initialize firebase
 firebase.initializeApp(firebaseConfig);
+
 let insightsRef = firebase.database().ref("insights");
 
 export default {
@@ -324,6 +317,7 @@ export default {
     };
   },
   methods: {
+    //set chart from data
     initBigChart(index) {
       let chartData = {
         datasets: [
@@ -338,10 +332,10 @@ export default {
       this.bigLineChart.chartData = chartData;
       this.bigLineChart.activeIndex = index;
     },
+
+    //fetching All Available Accounts and Campaigns from FB API
     fetchAllAccountsAndCampaignsFromFacebookApi() {
       insightsRef.once("value").then(snapshot => {
-        let list = [];
-
         snapshot.forEach(childSnapshot => {
           //get the random generated id
           var key = childSnapshot.key;
@@ -446,8 +440,6 @@ export default {
     },
     fetchAllCampaignsFromSelectedAccounts(selectedAccountsId) {
       insightsRef.once("value").then(snapshot => {
-        let list = [];
-
         snapshot.forEach(childSnapshot => {
           //get the random generated id
           var key = childSnapshot.key;
@@ -484,22 +476,22 @@ export default {
         });
       });
     },
+
+    //Fetching Metrics from selected accounts and campaings between start date and end date
     fetchAllAccountsAndCampaignsMetrics() {
       //form validation
       if (this.accounts_select.multiple.length <= 0) {
-        console.log("No Accounts Selected");
+        alert("No Accounts Selected");
       } else if (this.campaigns_select.multiple.length <= 0) {
-        console.log("No Campaigns Selected");
+        alert("No Campaigns Selected");
       } else if (!this.start_date) {
-        console.log("No Start Date Selected");
+        alert("No Start Date Selected");
       } else if (!this.end_date) {
-        console.log("No End Date Selected");
+        alert("No End Date Selected");
       } else {
         console.log("Fetching Metrics");
 
         insightsRef.once("value").then(snapshot => {
-          let list = [];
-
           snapshot.forEach(childSnapshot => {
             //get the random generated id
             var key = childSnapshot.key;
@@ -507,19 +499,16 @@ export default {
             //get the data inside object
             var values = snapshot.child(childSnapshot.key).val();
 
-            //loop to get all the
-            var cpc = [];
-            var cpm = [];
-            var cpp = [];
-            var ctr = [];
-            var label = [];
-
+            //array for each dates data
             var metrics = [];
 
             var date_start = new Date(this.start_date);
             var date_end = new Date(this.end_date);
 
-            //console.log(date_end);
+            var cpc_value = 0;
+            var cpm_value = 0;
+            var cpp_value = 0;
+            var ctr_value = 0;
 
             this.campaigns_select.multiple.forEach(campaign_id => {
               values.data.forEach((key, value) => {
@@ -535,14 +524,6 @@ export default {
                     campaign_date_start >= date_start &&
                     campaign_date_stop <= date_end
                   ) {
-                    var cpc_value = 0;
-                    var cpm_value = 0;
-                    var cpp_value = 0;
-                    var ctr_value = 0;
-
-                    // console.log(campaign_date_stop);
-                    // console.log(date_end);
-
                     if (key.cpc !== undefined) cpc_value = parseFloat(key.cpc);
                     else {
                       cpc_value = parseFloat(0);
@@ -572,14 +553,10 @@ export default {
                       //loop to add the cpp, cpm, cpp, ctr data to metrics array with the same date
                       for (var i = 0; i < metrics.length; i++) {
                         if (key.date_start == metrics[i].date_start) {
-                          metrics[i].data.cpc =
-                            cpc_value + parseFloat(metrics[i].data.cpc);
-                          metrics[i].data.cpm =
-                            cpm_value + parseFloat(metrics[i].data.cpm);
-                          metrics[i].data.cpp =
-                            cpp_value + parseFloat(metrics[i].data.cpp);
-                          metrics[i].data.ctr =
-                            ctr_value + parseFloat(metrics[i].data.ctr);
+                          metrics[i].data.cpc += cpc_value;
+                          metrics[i].data.cpm += cpm_value;
+                          metrics[i].data.cpp += cpp_value;
+                          metrics[i].data.ctr += ctr_value;
                         }
                       }
                     } else {
@@ -598,9 +575,35 @@ export default {
                 }
               });
             });
-            console.log(metrics);
-            //add to chart data
-            console.log(this.bigLineChart.chartData.datasets);
+            /* add to chart data */
+
+            //arrays to save total metrics for each
+            var cpc = [];
+            var cpm = [];
+            var cpp = [];
+            var ctr = [];
+            var label = [];
+            bigChartData = [];
+            bigChartLabels = [];
+
+            //save total metrics to each
+            metrics.forEach(key => {
+              cpc.push(key.data.cpc);
+              cpm.push(key.data.cpm);
+              cpp.push(key.data.cpp);
+              ctr.push(key.data.ctr);
+              label.push(key.date_start.toString());
+            });
+
+            //push data to chart
+            bigChartData.push(cpc);
+            bigChartData.push(cpm);
+            bigChartData.push(cpp);
+            bigChartData.push(ctr);
+            bigChartLabels = label;
+
+            //draw chart
+            this.initBigChart(0);
           });
         });
       }
@@ -617,10 +620,9 @@ export default {
     }
   },
   mounted() {
+    //draw chart when page is loaded
     this.fetchAllAccountsAndCampaignsFromFacebookApi();
     insightsRef.once("value").then(snapshot => {
-      let list = [];
-
       snapshot.forEach(childSnapshot => {
         //get the random generated id
         var key = childSnapshot.key;
