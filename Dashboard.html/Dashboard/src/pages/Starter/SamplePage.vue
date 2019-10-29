@@ -518,48 +518,85 @@ export default {
             var date_start = new Date(this.start_date);
             var date_end = new Date(this.end_date);
 
+            //console.log(date_end);
+
             this.campaigns_select.multiple.forEach(campaign_id => {
               values.data.forEach((key, value) => {
-                if (campaign_id == key.campaign_id) {
-                  var cpc_value = parseFloat(key.cpc);
-                  var cpm_value = parseFloat(key.cpm);
-                  var cpp_value = parseFloat(key.cpp);
-                  var ctr_value = parseFloat(key.ctr);
+                var campaign_date_start = new Date(key.date_start);
+                var campaign_date_stop = new Date(key.date_stop);
 
-                  //condition to check whether the date start of key is already in metrics array
+                if (campaign_id == key.campaign_id) {
+                  console.log(campaign_date_start + " - " + campaign_date_stop);
+                  console.log(date_start + " - " + date_end);
                   if (
-                    metrics.filter(
-                      e => e.date_start == key.date_start.toString()
-                    ).length > 0
+                    campaign_date_start >= date_start &&
+                    campaign_date_stop <= date_end
                   ) {
-                    //loop to add the cpp, cpm, cpp, ctr data to metrics array with the same date
-                    for (var i = 0; i < metrics.length - 1; i++) {
-                      if (key.date_start == metrics[i].date_start) {
-                        metrics[i].data.cpc =
-                          cpc_value + parseFloat(metrics[i].data.cpc);
-                        metrics[i].data.cpm =
-                          cpm_value + parseFloat(metrics[i].data.cpm);
-                        metrics[i].data.cpp =
-                          cpp_value + parseFloat(metrics[i].data.cpp);
-                        metrics[i].data.ctr =
-                          ctr_value + parseFloat(metrics[i].data.ctr);
-                      }
+                    var cpc_value = 0;
+                    var cpm_value = 0;
+                    var cpp_value = 0;
+                    var ctr_value = 0;
+
+                    // console.log(campaign_date_stop);
+                    // console.log(date_end);
+
+                    if (key.cpc !== undefined) cpc_value = parseFloat(key.cpc);
+                    else {
+                      cpc_value = parseFloat(0);
                     }
-                  } else {
-                    var properties = {
-                      date_start: key.date_start.toString(),
-                      data: {
-                        cpc: cpc_value,
-                        cpm: cpm_value,
-                        cpp: cpp_value,
-                        ctr: ctr_value
+
+                    if (key.cpm !== undefined) cpm_value = parseFloat(key.cpm);
+                    else {
+                      cpm_value = parseFloat(0);
+                    }
+
+                    if (key.cpp !== undefined) cpp_value = parseFloat(key.cpp);
+                    else {
+                      cpp_value = parseFloat(0);
+                    }
+
+                    if (key.ctr !== undefined) ctr_value = parseFloat(key.ctr);
+                    else {
+                      ctr_value = parseFloat(0);
+                    }
+
+                    //condition to check whether the date start of key is already in metrics array
+                    if (
+                      metrics.filter(
+                        e => e.date_start == key.date_start.toString()
+                      ).length > 0
+                    ) {
+                      //loop to add the cpp, cpm, cpp, ctr data to metrics array with the same date
+                      for (var i = 0; i < metrics.length; i++) {
+                        if (key.date_start == metrics[i].date_start) {
+                          metrics[i].data.cpc =
+                            cpc_value + parseFloat(metrics[i].data.cpc);
+                          metrics[i].data.cpm =
+                            cpm_value + parseFloat(metrics[i].data.cpm);
+                          metrics[i].data.cpp =
+                            cpp_value + parseFloat(metrics[i].data.cpp);
+                          metrics[i].data.ctr =
+                            ctr_value + parseFloat(metrics[i].data.ctr);
+                        }
                       }
-                    };
-                    metrics.push(properties);
+                    } else {
+                      var properties = {
+                        date_start: key.date_start.toString(),
+                        data: {
+                          cpc: cpc_value,
+                          cpm: cpm_value,
+                          cpp: cpp_value,
+                          ctr: ctr_value
+                        }
+                      };
+                      metrics.push(properties);
+                    }
                   }
                 }
               });
             });
+            console.log(metrics);
+            //add to chart data
           });
         });
       }
