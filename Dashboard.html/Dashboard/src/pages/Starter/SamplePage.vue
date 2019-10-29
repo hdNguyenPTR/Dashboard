@@ -130,7 +130,7 @@
 
     <div class="col-12">
       <card type="chart">
-        <div class="row pl-1 pr-1">
+        <div class="row pl-2 pr-2 mb-2">
           <div class="col-md-6 col-12"></div>
 
           <div class="col-md-6 col-12">
@@ -518,16 +518,16 @@ export default {
             var date_start = new Date(this.start_date);
             var date_end = new Date(this.end_date);
 
-            //console.log(date_end);
-
             this.campaigns_select.multiple.forEach(campaign_id => {
               values.data.forEach((key, value) => {
-                var campaign_date_start = new Date(key.date_start);
-                var campaign_date_stop = new Date(key.date_stop);
+                var campaign_date_start = new Date(
+                  new Date(key.date_start).toDateString()
+                );
+                var campaign_date_stop = new Date(
+                  new Date(key.date_stop).toDateString()
+                );
 
                 if (campaign_id == key.campaign_id) {
-                  console.log(campaign_date_start + " - " + campaign_date_stop);
-                  console.log(date_start + " - " + date_end);
                   if (
                     campaign_date_start >= date_start &&
                     campaign_date_stop <= date_end
@@ -536,9 +536,6 @@ export default {
                     var cpm_value = 0;
                     var cpp_value = 0;
                     var ctr_value = 0;
-
-                    // console.log(campaign_date_stop);
-                    // console.log(date_end);
 
                     if (key.cpc !== undefined) cpc_value = parseFloat(key.cpc);
                     else {
@@ -595,11 +592,65 @@ export default {
                 }
               });
             });
-            console.log(metrics);
             //add to chart data
+            var cpc = [];
+            var cpm = [];
+            var cpp = [];
+            var ctr = [];
+            var label = [];
+            metrics.forEach(key => {
+              cpc.push(parseFloat(key.data.cpc));
+              cpm.push(parseFloat(key.data.cpm));
+              cpp.push(parseFloat(key.data.cpp));
+              ctr.push(parseFloat(key.data.ctr));
+              label.push(key.date_start.toString());
+            });
+            bigChartData = [];
+            bigChartLabels = [];
+            bigChartData.push(cpc);
+            bigChartData.push(cpm);
+            bigChartData.push(cpp);
+            bigChartData.push(ctr);
+            bigChartLabels = label;
+            this.initBigChart(0);
           });
         });
       }
+    },
+    inRange(d, start, end) {
+      // Checks if date in d is between dates in start and end.
+      // Returns a boolean or NaN:
+      //    true  : if d is between start and end (inclusive)
+      //    false : if d is before start or after end
+      //    NaN   : if one or more of the dates is illegal.
+      // NOTE: The code inside isFinite does an assignment (=).
+      return isFinite((d = this.convert(d).valueOf())) &&
+        isFinite((start = this.convert(start).valueOf())) &&
+        isFinite((end = this.convert(end).valueOf()))
+        ? start <= d && d <= end
+        : NaN;
+    },
+    convert(d) {
+      // Converts the date in d to a date-object. The input can be:
+      //   a date object: returned without modification
+      //  an array      : Interpreted as [year,month,day]. NOTE: month is 0-11.
+      //   a number     : Interpreted as number of milliseconds
+      //                  since 1 Jan 1970 (a timestamp)
+      //   a string     : Any format supported by the javascript engine, like
+      //                  "YYYY/MM/DD", "MM/DD/YYYY", "Jan 31 2009" etc.
+      //  an object     : Interpreted as an object with year, month and date
+      //                  attributes.  **NOTE** month is 0-11.
+      return d.constructor === Date
+        ? d
+        : d.constructor === Array
+        ? new Date(d[0], d[1], d[2])
+        : d.constructor === Number
+        ? new Date(d)
+        : d.constructor === String
+        ? new Date(d)
+        : typeof d === "object"
+        ? new Date(d.year, d.month, d.date)
+        : NaN;
     }
   },
   computed: {

@@ -24,14 +24,10 @@ import router from "./routes/starterRouter";
 import i18n from "./i18n";
 import "./registerServiceWorker";
 
-import VeeValidate from "vee-validate";
-
 // plugin setup
 Vue.use(DashboardPlugin);
 Vue.use(VueRouter);
 Vue.use(RouterPrefetch);
-Vue.use(require("vue-moment"));
-Vue.use(VeeValidate);
 
 /* eslint-disable no-new */
 new Vue({
