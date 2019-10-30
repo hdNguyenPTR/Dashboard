@@ -6,6 +6,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 test/unit/coverage
+src/pages/Starter/config.js
 
 package-lock.json
 
