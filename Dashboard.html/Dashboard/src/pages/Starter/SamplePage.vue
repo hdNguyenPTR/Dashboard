@@ -343,10 +343,10 @@ export default {
           //get the data inside object
           var values = snapshot.child(childSnapshot.key).val();
 
-          //loop to get all the
           var accounts = [];
           var campaigns = [];
 
+          //loop to get all the accounts and campaigns
           values.data.forEach(key => {
             accounts.push({
               id: key.account_id,
