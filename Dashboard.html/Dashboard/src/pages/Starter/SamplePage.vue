@@ -203,7 +203,7 @@ let bigChartDatasetOptions = {
 //initialize firebase
 firebase.initializeApp(firebaseConfig);
 
-let insightsRef = firebase.database().ref("insights");
+let insightsRef = firebase.database().ref("facebook-api");
 
 export default {
   name: "starter-page",
