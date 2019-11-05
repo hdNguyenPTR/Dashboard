@@ -302,7 +302,7 @@
     </div>
 
     <!-- table start -->
-    <div class="col-md-12">
+    <div class="col-md-6 col-lg-12">
       <card card-body-classes="table-full-width">
         <h2 class="card-title">Top Campaigns</h2>
         <h5 class="card-category">by ROAS, Amount spent, and Cost / Action.</h5>
