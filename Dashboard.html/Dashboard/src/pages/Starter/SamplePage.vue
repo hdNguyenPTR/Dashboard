@@ -131,33 +131,41 @@
 
     <div class="col-12">
       <card type="chart">
-        <div class="row pl-2 pr-2 mb-2">
-          <div class="col-md-6 col-12"></div>
-
-          <div class="col-md-6 col-12">
-            <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
-              <label
-                v-for="(option, index) in bigLineChartCategories"
-                :key="option.name"
-                class="btn btn-sm btn-primary btn-simple"
-                :class="{ active: bigLineChart.activeIndex === index }"
-                :id="index"
-              >
-                <input
-                  type="radio"
-                  @click="initBigChart(index)"
-                  name="options"
-                  autocomplete="off"
-                  :checked="bigLineChart.activeIndex === index"
-                />
-                <span class="d-none d-sm-block">{{ option.name }}</span>
-                <span class="d-block d-sm-none">
-                  <i :class="option.icon"></i>
-                </span>
-              </label>
+        <template slot="header">
+          <div class="row">
+            <div class="col-sm-6" :class="isRTL ? 'text-right' : 'text-left'">
+              <h5 class="card-category">Overview</h5>
+              <h2 class="card-title">Performance</h2>
             </div>
           </div>
-        </div>
+          <div class="row pl-2 pr-2 mb-2">
+            <div class="col-md-6 col-12"></div>
+
+            <div class="col-md-6 col-12">
+              <div class="btn-group btn-group-toggle float-right" data-toggle="buttons">
+                <label
+                  v-for="(option, index) in bigLineChartCategories"
+                  :key="option.name"
+                  class="btn btn-sm btn-primary btn-simple"
+                  :class="{ active: bigLineChart.activeIndex === index }"
+                  :id="index"
+                >
+                  <input
+                    type="radio"
+                    @click="initBigChart(index)"
+                    name="options"
+                    autocomplete="off"
+                    :checked="bigLineChart.activeIndex === index"
+                  />
+                  <span class="d-none d-sm-block">{{ option.name }}</span>
+                  <span class="d-block d-sm-none">
+                    <i :class="option.icon"></i>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </template>
         <div class="chart-area">
           <line-chart
             style="height: 100%"
