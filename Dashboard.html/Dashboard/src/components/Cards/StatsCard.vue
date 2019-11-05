@@ -3,14 +3,16 @@
     <div class="row">
       <div class="col-5" v-if="$slots.icon || icon">
         <div class="info-icon text-center" :class="`icon-${type}`">
-          <slot name="icon"> <i :class="icon"></i> </slot>
+          <slot name="icon">
+            <i :class="icon"></i>
+          </slot>
         </div>
       </div>
-      <div class="col-7" v-if="$slots.content || title || subTitle">
-        <div class="numbers">
+      <div class="col-7 text-right" v-if="$slots.content || title || subTitle">
+        <div class>
           <slot>
             <p v-if="subTitle" class="card-category">{{ subTitle }}</p>
-            <h3 v-if="title" class="card-title">{{ title }}</h3>
+            <h3 v-if="title" class="card-title mb-0">{{ title }}</h3>
           </slot>
         </div>
       </div>
@@ -21,17 +23,17 @@
   </card>
 </template>
 <script>
-import Card from './Card.vue';
+import Card from "./Card.vue";
 
 export default {
-  name: 'stats-card',
+  name: "stats-card",
   components: {
     Card
   },
   props: {
     type: {
       type: String,
-      default: 'primary'
+      default: "primary"
     },
     icon: String,
     title: String,

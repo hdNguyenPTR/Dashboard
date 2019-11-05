@@ -118,13 +118,66 @@
           <div class="col-lg-1 col-md-12 col-12">
             <label for></label>
             <base-button
-              type="primary"
+              type="default"
               class="btn-block"
               @click.prevent="fetchAllAccountsAndCampaignsMetrics()"
             >
               <i class="tim-icons icon-refresh-02"></i>
             </base-button>
           </div>
+        </div>
+      </card>
+    </div>
+
+    <!-- Metrics Card -->
+    <div class="col-12">
+      <div class="row">
+        <!--  -->
+        <div class="col-lg-4 col-md-4 col-12"></div>
+      </div>
+    </div>
+    <!-- Metrics Card -->
+
+    <!-- Stats Cards -->
+    <div class="col-lg-3 col-md-6 col-6" v-for="card in statsCards" :key="card.subTitle">
+      <stats-card
+        :title="card.value"
+        :sub-title="card.subTitle"
+        :type="card.type"
+        :icon="card.icon"
+      ></stats-card>
+    </div>
+
+    <div class="col-md-6 col-12 ml-auto">
+      <card class="card-chart" no-footer-line>
+        <template slot="header">
+          <h5 class="card-category">TOTAL</h5>
+          <h3 class="card-title">Clicks and Impressions</h3>
+        </template>
+        <div class="chart-area">
+          <line-chart
+            style="height: 100%"
+            :chart-data="lineChartForTotalImpressionsAndClicks.chartData"
+            :gradient-colors="lineChartForTotalImpressionsAndClicks.gradientColors"
+            :gradient-stops="lineChartForTotalImpressionsAndClicks.gradientStops"
+            :extra-options="lineChartForTotalImpressionsAndClicks.extraOptions"
+          ></line-chart>
+        </div>
+      </card>
+    </div>
+
+    <div class="col-md-6 col-12 ml-auto">
+      <card class="card-chart" no-footer-line>
+        <template slot="header">
+          <h5 class="card-category">TOTAL</h5>
+          <h3 class="card-title">Clicks and Inline Link Clicks</h3>
+        </template>
+        <div class="chart-area">
+          <bar-chart
+            :chart-data="barChartForTotalClicksAndInlineLinkClicks.chartData"
+            :extra-options="barChartForTotalClicksAndInlineLinkClicks.extraOptions"
+            style="height: 100%;"
+          ></bar-chart>
         </div>
       </card>
     </div>
@@ -139,7 +192,7 @@
               <label
                 v-for="(option, index) in bigLineChartCategories"
                 :key="option.name"
-                class="btn btn-sm btn-primary btn-simple"
+                class="btn btn-sm btn-default btn-simple"
                 :class="{ active: bigLineChart.activeIndex === index }"
                 :id="index"
               >
@@ -179,6 +232,8 @@ import * as chartConfigs from "@/components/Charts/config";
 import config from "@/config";
 import * as firebase from "firebase";
 import { firebaseConfig } from "./config";
+import BarChart from "src/components/Charts/BarChart";
+import StatsCard from "src/components/Cards/StatsCard";
 
 let bigChartData = [];
 let bigChartLabels = [];
@@ -202,17 +257,18 @@ let bigChartDatasetOptions = {
 
 //initialize firebase
 firebase.initializeApp(firebaseConfig);
-
 let insightsRef = firebase.database().ref("facebook-api");
 
 export default {
   name: "starter-page",
   components: {
     LineChart,
+    BarChart,
     [DatePicker.name]: DatePicker,
     [Option.name]: Option,
     [Select.name]: Select,
-    Button
+    Button,
+    StatsCard
   },
   data() {
     return {
@@ -232,7 +288,7 @@ export default {
           ],
           labels: bigChartLabels
         },
-        extraOptions: chartConfigs.purpleChartOptions,
+        extraOptions: chartConfigs.lineChartOptionsForTotalImpressionsAndCLicks,
         gradientColors: config.colors.primaryGradient,
         gradientStops: [1, 0.4, 0],
         categories: []
@@ -313,6 +369,113 @@ export default {
         end_date: {
           required: true
         }
+      },
+      scorecard_statistics: {
+        total_clicks: 0,
+        total_impressions: 0,
+        total_reach: 0
+      },
+      statsCards: [
+        {
+          value: "0",
+          subTitle: "Impressions",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-refresh-01"></i> Update Now'
+        },
+        {
+          value: "0",
+          subTitle: "Clicks",
+          type: "info",
+          icon: "tim-icons icon-tap-02",
+          footer: '<i class="tim-icons icon-sound-wave"></i></i> Last Research'
+        },
+        {
+          value: "0",
+          subTitle: "Reach",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-trophy"></i> Customer feedback'
+        },
+        {
+          value: "0",
+          subTitle: "Click Rate",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-trophy"></i> Customer feedback'
+        }
+      ],
+      lineChartForTotalImpressionsAndClicks: {
+        chartData: {
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+          datasets: [
+            {
+              label: "Impressions",
+              fill: true,
+              borderColor: config.colors.primary,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: config.colors.primary,
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: config.colors.primary,
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: [80, 100, 70, 80, 120, 80]
+            },
+            {
+              label: "Clicks",
+              fill: true,
+              borderColor: config.colors.teal,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: config.colors.teal,
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: config.colors.teal,
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: [20, 60, 40, 30, 100, 40]
+            }
+          ]
+        },
+        extraOptions: chartConfigs.lineChartOptionsForTotalImpressionsAndCLicks,
+        gradientColors: config.colors.primaryGradient,
+        gradientStops: [1, 0.4, 0]
+      },
+      barChartForTotalClicksAndInlineLinkClicks: {
+        chartData: {
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+          datasets: [
+            {
+              label: "Data",
+              fill: true,
+              backgroundColor: config.colors.primary,
+              hoverBackgroundColor: config.colors.primary,
+              borderColor: config.colors.primary,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              data: [80, 100, 70, 80, 120, 80]
+            },
+            {
+              label: "Data",
+              fill: true,
+              backgroundColor: config.colors.teal,
+              hoverBackgroundColor: config.colors.teal,
+              borderColor: config.colors.teal,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              data: [60, 110, 90, 70, 90, 100]
+            }
+          ]
+        },
+        extraOptions: chartConfigs.barChartOptionsGradient
       }
     };
   },
@@ -509,6 +672,9 @@ export default {
             var cpm_value = 0;
             var cpp_value = 0;
             var ctr_value = 0;
+            var total_clicks = 0;
+            var total_impressions = 0;
+            var total_reach = 0;
 
             this.campaigns_select.multiple.forEach(campaign_id => {
               values.data.forEach((key, value) => {
@@ -542,6 +708,24 @@ export default {
                     if (key.ctr !== undefined) ctr_value = parseFloat(key.ctr);
                     else {
                       ctr_value = parseFloat(0);
+                    }
+
+                    if (key.clicks !== undefined)
+                      total_clicks += parseFloat(key.clicks);
+                    else {
+                      total_clicks += parseFloat(0);
+                    }
+
+                    if (key.impressions !== undefined)
+                      total_impressions += parseFloat(key.impressions);
+                    else {
+                      total_impressions += parseFloat(0);
+                    }
+
+                    if (key.reach !== undefined)
+                      total_reach += parseFloat(key.reach);
+                    else {
+                      total_reach += parseFloat(0);
                     }
 
                     //condition to check whether the date start of key is already in metrics array
@@ -586,6 +770,13 @@ export default {
             bigChartData = [];
             bigChartLabels = [];
 
+            //Assign the scorecard sum
+            this.statsCards[1]["value"] = total_clicks.toLocaleString();
+            this.statsCards[0]["value"] = total_impressions.toLocaleString();
+            this.statsCards[2]["value"] = total_reach.toLocaleString();
+            this.statsCards[3]["value"] = (
+              total_clicks / total_impressions
+            ).toLocaleString();
             //save total metrics to each
             metrics.forEach(key => {
               cpc.push(key.data.cpc);
@@ -607,7 +798,8 @@ export default {
           });
         });
       }
-    }
+    },
+    initializeLineChartForTotalImpressionsAndClicksData() {}
   },
   computed: {
     bigLineChartCategories() {
@@ -638,6 +830,9 @@ export default {
         var label = [];
         var accounts = [];
         var campaigns = [];
+        var total_clicks = 0;
+        var total_impressions = 0;
+        var total_reach = 0;
 
         values.data.forEach((key, value) => {
           if (key.cpc !== undefined) cpc.push(parseFloat(key.cpc));
@@ -659,10 +854,50 @@ export default {
           else {
             ctr.push(parseFloat(0));
           }
+
+          if (key.clicks !== undefined) total_clicks += parseFloat(key.clicks);
+          else {
+            total_clicks += parseFloat(0);
+          }
+
+          if (key.impressions !== undefined)
+            total_impressions += parseFloat(key.impressions);
+          else {
+            total_impressions += parseFloat(0);
+          }
+
+          if (key.reach !== undefined) total_reach += parseFloat(key.reach);
+          else {
+            total_reach += parseFloat(0);
+          }
+
+          if (key.clicks !== undefined) total_clicks += parseFloat(key.clicks);
+          else {
+            total_clicks += parseFloat(0);
+          }
+
+          if (key.impressions !== undefined)
+            total_impressions += parseFloat(key.impressions);
+          else {
+            total_impressions += parseFloat(0);
+          }
+
+          if (key.reach !== undefined) total_reach += parseFloat(key.reach);
+          else {
+            total_reach += parseFloat(0);
+          }
+
           var date_start = key.date_start.toString();
           var date_stop = key.date_stop.toString();
           label.push(key.date_start.toString());
         });
+
+        //Assign the scorecard sum
+        this.statsCards[0]["value"] = total_impressions.toLocaleString();
+        this.statsCards[1]["value"] = total_clicks.toLocaleString();
+        this.statsCards[2]["value"] = total_reach.toLocaleString();
+        this.statsCards[3]["value"] =
+          (total_clicks / total_impressions).toLocaleString() + "%";
 
         bigChartData.push(cpc);
         bigChartData.push(cpm);
