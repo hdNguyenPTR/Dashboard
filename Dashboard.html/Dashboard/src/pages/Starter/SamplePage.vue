@@ -118,7 +118,7 @@
           <div class="col-lg-1 col-md-12 col-12">
             <label for></label>
             <base-button
-              type="primary"
+              type="default"
               class="btn-block"
               @click.prevent="fetchAllAccountsAndCampaignsMetrics()"
             >
@@ -129,11 +129,133 @@
       </card>
     </div>
 
+    <!-- Multiple charts part -->
+    <div class="col-12">
+      <div class="row">
+        <!-- Column 1 Start -->
+        <div class="col-lg-4 col-md-6">
+          <card>
+            <div class="row">
+              <div class="col-lg-12 col-md-6">
+                <h2 class="card-title">Cost & Impressions</h2>
+                <h5 class="card-category">by Amount spent, CPM, and Impressions</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-4 col-md-6" v-for="card in statsCards_a" :key="card.subTitle">
+                <stats-card :title="card.value" :sub-title="card.subTitle" :type="card.type"></stats-card>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 col-lg-12">
+                <card class="card-chart" no-footer-line>
+                  <div class="chart-area">
+                    <line-chart
+                      style="height: 100%"
+                      :chart-data="lineChartForCostAndImpressions.chartData"
+                      :gradient-colors="lineChartForCostAndImpressions.gradientColors"
+                      :gradient-stops="lineChartForCostAndImpressions.gradientStops"
+                      :extra-options="lineChartForCostAndImpressions.extraOptions"
+                    ></line-chart>
+                  </div>
+                </card>
+              </div>
+            </div>
+          </card>
+        </div>
+        <!-- End Column 1-->
+
+        <!-- Start Column 2 -->
+        <div class="col-lg-4 col-md-6">
+          <card>
+            <div class="row">
+              <div class="col-lg-12 col-md-6">
+                <h2 class="card-title">Clicks</h2>
+                <h5 class="card-category">by Clicks, CTR, and CPC</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-4 col-md-6" v-for="card in statsCards_b" :key="card.subTitle">
+                <stats-card
+                  :title="card.value"
+                  :sub-title="card.subTitle"
+                  :type="card.type"
+                  :icon="card.icon"
+                ></stats-card>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 col-lg-12">
+                <card class="card-chart" no-footer-line>
+                  <div class="chart-area">
+                    <line-chart
+                      style="height: 100%"
+                      :chart-data="lineChartForClicks.chartData"
+                      :gradient-colors="lineChartForClicks.gradientColors"
+                      :gradient-stops="lineChartForClicks.gradientStops"
+                      :extra-options="lineChartForClicks.extraOptions"
+                    ></line-chart>
+                  </div>
+                </card>
+              </div>
+            </div>
+          </card>
+        </div>
+        <!-- End Column 2 -->
+
+        <!-- Start Column 3 -->
+        <div class="col-lg-4 col-md-6">
+          <card>
+            <div class="row">
+              <div class="col-lg-12 col-md-6">
+                <h2 class="card-title">Actions</h2>
+                <h5 class="card-category">by Actions, Action Rate and Cost / Action.</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-4 col-md-6" v-for="card in statsCards_c" :key="card.subTitle">
+                <stats-card
+                  :title="card.value"
+                  :sub-title="card.subTitle"
+                  :type="card.type"
+                  :icon="card.icon"
+                ></stats-card>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 col-lg-12">
+                <card class="card-chart" no-footer-line>
+                  <div class="chart-area">
+                    <line-chart
+                      style="height: 100%"
+                      :chart-data="lineChartForActions.chartData"
+                      :gradient-colors="lineChartForActions.gradientColors"
+                      :gradient-stops="lineChartForActions.gradientStops"
+                      :extra-options="lineChartForActions.extraOptions"
+                    ></line-chart>
+                  </div>
+                </card>
+              </div>
+            </div>
+          </card>
+        </div>
+        <!-- End Column 3-->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Div-->
+
     <div class="col-12">
       <card type="chart">
         <template slot="header">
           <div class="row">
-            <div class="col-sm-6" :class="isRTL ? 'text-right' : 'text-left'">
+            <div class="col-sm-6">
               <h5 class="card-category">Overview</h5>
               <h2 class="card-title">Performance</h2>
             </div>
@@ -178,6 +300,34 @@
         </div>
       </card>
     </div>
+
+    <!-- table start -->
+    <div class="col-md-12">
+      <card card-body-classes="table-full-width">
+        <h2 class="card-title">Top Campaigns</h2>
+        <h5 class="card-category">by ROAS, Amount spent, and Cost / Action.</h5>
+        <el-table :data="tableData">
+          <el-table-column min-width="150" sortable label="Campaign Name" property="name"></el-table-column>
+          <el-table-column
+            min-width="150"
+            sortable
+            align="right"
+            header-align="left"
+            label="Amount Spent"
+            property="spent"
+          ></el-table-column>
+          <el-table-column
+            min-width="150"
+            sortable
+            align="right"
+            header-align="left"
+            label="Cost per website conversion"
+            property="cpwc"
+          ></el-table-column>
+        </el-table>
+      </card>
+    </div>
+    <!-- table End -->
   </div>
 </template>
 <script>
@@ -185,8 +335,11 @@ import { TimeSelect, DatePicker, Select, Option, Button } from "element-ui";
 import LineChart from "@/components/Charts/LineChart";
 import * as chartConfigs from "@/components/Charts/config";
 import config from "@/config";
+import { Table, TableColumn } from "element-ui";
 import * as firebase from "firebase";
 import { firebaseConfig } from "./config";
+import BarChart from "src/components/Charts/BarChart";
+import StatsCard from "src/components/Cards/StatsCard";
 
 let bigChartData = [];
 let bigChartLabels = [];
@@ -210,17 +363,20 @@ let bigChartDatasetOptions = {
 
 //initialize firebase
 firebase.initializeApp(firebaseConfig);
-
 let insightsRef = firebase.database().ref("facebook-api");
 
 export default {
   name: "starter-page",
   components: {
     LineChart,
+    BarChart,
     [DatePicker.name]: DatePicker,
     [Option.name]: Option,
     [Select.name]: Select,
-    Button
+    Button,
+    StatsCard,
+    [Table.name]: Table,
+    [TableColumn.name]: TableColumn
   },
   data() {
     return {
@@ -240,7 +396,7 @@ export default {
           ],
           labels: bigChartLabels
         },
-        extraOptions: chartConfigs.purpleChartOptions,
+        extraOptions: chartConfigs.lineChartForCostAndImpressions,
         gradientColors: config.colors.primaryGradient,
         gradientStops: [1, 0.4, 0],
         categories: []
@@ -321,7 +477,263 @@ export default {
         end_date: {
           required: true
         }
-      }
+      },
+      scorecard_statistics: {
+        total_clicks: 0,
+        total_impressions: 0,
+        total_reach: 0
+      },
+      statsCards_a: [
+        {
+          value: "0",
+          subTitle: "Amount Spent",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-refresh-01"></i> Update Now'
+        },
+        {
+          value: "0",
+          subTitle: "CPM",
+          type: "info",
+          icon: "tim-icons icon-tap-02",
+          footer: '<i class="tim-icons icon-sound-wave"></i></i> Last Research'
+        },
+        {
+          value: "0",
+          subTitle: "Impressions",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-trophy"></i> Customer feedback'
+        }
+      ],
+      statsCards_b: [
+        {
+          value: "0",
+          subTitle: "Clicks (all)",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-refresh-01"></i> Update Now'
+        },
+        {
+          value: "0",
+          subTitle: "CTR (all)",
+          type: "info",
+          icon: "tim-icons icon-tap-02",
+          footer: '<i class="tim-icons icon-sound-wave"></i></i> Last Research'
+        },
+        {
+          value: "0",
+          subTitle: "CPC (all)",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-trophy"></i> Customer feedback'
+        }
+      ],
+      statsCards_c: [
+        {
+          value: "0",
+          subTitle: "Website conv.",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-refresh-01"></i> Update Now'
+        },
+        {
+          value: "0",
+          subTitle: "Website conv-%",
+          type: "info",
+          icon: "tim-icons icon-tap-02",
+          footer: '<i class="tim-icons icon-sound-wave"></i></i> Last Research'
+        },
+        {
+          value: "0",
+          subTitle: "Cost/Website conv.",
+          type: "info",
+          icon: "tim-icons icon-refresh-01",
+          footer: '<i class="tim-icons icon-trophy"></i> Customer feedback'
+        }
+      ],
+      lineChartForCostAndImpressions: {
+        chartData: {
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+          datasets: [
+            {
+              label: "Amount Spents",
+              fill: true,
+              borderColor: config.colors.primary,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: config.colors.primary,
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: config.colors.primary,
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: [80, 100, 70, 80, 120, 80]
+            },
+            {
+              label: "CPM",
+              fill: true,
+              borderColor: config.colors.orange,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: config.colors.orange,
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: config.colors.orange,
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: [20, 60, 40, 30, 100, 40]
+            }
+          ]
+        },
+        extraOptions: chartConfigs.lineChartForCostAndImpressions,
+        gradientColors: config.colors.primaryGradient,
+        gradientStops: [1, 0.4, 0]
+      },
+      lineChartForClicks: {
+        chartData: {
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+          datasets: [
+            {
+              label: "Clicks (all)",
+              fill: true,
+              borderColor: config.colors.primary,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: config.colors.primary,
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: config.colors.primary,
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: [80, 100, 70, 80, 120, 80]
+            },
+            {
+              label: "CPC (all)",
+              fill: true,
+              borderColor: config.colors.orange,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: config.colors.orange,
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: config.colors.orange,
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: [20, 60, 40, 30, 100, 40]
+            }
+          ]
+        },
+        extraOptions: chartConfigs.lineChartForCostAndImpressions,
+        gradientColors: config.colors.primaryGradient,
+        gradientStops: [1, 0.4, 0]
+      },
+      lineChartForActions: {
+        chartData: {
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+          datasets: [
+            {
+              label: "Website Conv.",
+              fill: true,
+              borderColor: config.colors.primary,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: config.colors.primary,
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: config.colors.primary,
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: [80, 100, 70, 80, 120, 80]
+            },
+            {
+              label: "Website Conv. rate",
+              fill: true,
+              borderColor: config.colors.orange,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: config.colors.orange,
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: config.colors.orange,
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: [20, 60, 40, 30, 100, 40]
+            }
+          ]
+        },
+        extraOptions: chartConfigs.lineChartForCostAndImpressions,
+        gradientColors: config.colors.primaryGradient,
+        gradientStops: [1, 0.4, 0]
+      },
+      barChartForTotalClicksAndInlineLinkClicks: {
+        chartData: {
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
+          datasets: [
+            {
+              label: "Data",
+              fill: true,
+              backgroundColor: config.colors.primary,
+              hoverBackgroundColor: config.colors.primary,
+              borderColor: config.colors.primary,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              data: [80, 100, 70, 80, 120, 80]
+            },
+            {
+              label: "Data",
+              fill: true,
+              backgroundColor: config.colors.teal,
+              hoverBackgroundColor: config.colors.teal,
+              borderColor: config.colors.teal,
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              data: [60, 110, 90, 70, 90, 100]
+            }
+          ]
+        },
+        extraOptions: chartConfigs.barChartOptionsGradient
+      },
+      tableData: [
+        {
+          id: 1,
+          name: "SEAOIL",
+          spent: "$24,664.02",
+          cpwc: "$56.25"
+        },
+        {
+          id: 2,
+          name: "SIBME",
+          spent: "$19,257.23",
+          cpwc: "$24.22"
+        },
+        {
+          id: 3,
+          name: "SUZUKI",
+          spent: "$190,234.21",
+          cpwc: "$14.114"
+        },
+        {
+          id: 4,
+          name: "SAGAMI",
+          spent: "$12,980.11",
+          cpwc: "$175.44"
+        }
+      ]
     };
   },
   methods: {
@@ -418,6 +830,18 @@ export default {
       } else {
         multiple_value.splice(0, multiple_value.length);
       }
+    },
+    tableRowClassName({ rowIndex }) {
+      if (rowIndex === 0) {
+        return "table-success";
+      } else if (rowIndex === 2) {
+        return "table-info";
+      } else if (rowIndex === 4) {
+        return "table-danger";
+      } else if (rowIndex === 6) {
+        return "table-warning";
+      }
+      return "";
     },
     checkIfAllAccountsSelected() {
       let multiple_value = this.accounts_select.multiple;
@@ -517,6 +941,9 @@ export default {
             var cpm_value = 0;
             var cpp_value = 0;
             var ctr_value = 0;
+            var total_clicks = 0;
+            var total_impressions = 0;
+            var total_reach = 0;
 
             this.campaigns_select.multiple.forEach(campaign_id => {
               values.data.forEach((key, value) => {
@@ -550,6 +977,24 @@ export default {
                     if (key.ctr !== undefined) ctr_value = parseFloat(key.ctr);
                     else {
                       ctr_value = parseFloat(0);
+                    }
+
+                    if (key.clicks !== undefined)
+                      total_clicks += parseFloat(key.clicks);
+                    else {
+                      total_clicks += parseFloat(0);
+                    }
+
+                    if (key.impressions !== undefined)
+                      total_impressions += parseFloat(key.impressions);
+                    else {
+                      total_impressions += parseFloat(0);
+                    }
+
+                    if (key.reach !== undefined)
+                      total_reach += parseFloat(key.reach);
+                    else {
+                      total_reach += parseFloat(0);
                     }
 
                     //condition to check whether the date start of key is already in metrics array
@@ -594,6 +1039,24 @@ export default {
             bigChartData = [];
             bigChartLabels = [];
 
+            //Assign the scorecard sum
+            this.statsCards_a[1]["value"] = total_clicks.toLocaleString();
+            this.statsCards_a[0]["value"] = total_impressions.toLocaleString();
+            this.statsCards_a[2]["value"] = (
+              total_clicks / total_impressions
+            ).toLocaleString();
+
+            this.statsCards_b[1]["value"] = total_clicks.toLocaleString();
+            this.statsCards_b[0]["value"] = total_impressions.toLocaleString();
+            this.statsCards_b[2]["value"] = (
+              total_clicks / total_impressions
+            ).toLocaleString();
+
+            this.statsCards_c[1]["value"] = total_clicks.toLocaleString();
+            this.statsCards_c[0]["value"] = total_impressions.toLocaleString();
+            this.statsCards_c[2]["value"] = (
+              total_clicks / total_impressions
+            ).toLocaleString();
             //save total metrics to each
             metrics.forEach(key => {
               cpc.push(key.data.cpc);
@@ -615,7 +1078,8 @@ export default {
           });
         });
       }
-    }
+    },
+    initializeLineChartForTotalImpressionsAndClicksData() {}
   },
   computed: {
     bigLineChartCategories() {
@@ -646,6 +1110,9 @@ export default {
         var label = [];
         var accounts = [];
         var campaigns = [];
+        var total_clicks = 0;
+        var total_impressions = 0;
+        var total_reach = 0;
 
         values.data.forEach((key, value) => {
           if (key.cpc !== undefined) cpc.push(parseFloat(key.cpc));
@@ -667,10 +1134,59 @@ export default {
           else {
             ctr.push(parseFloat(0));
           }
+
+          if (key.clicks !== undefined) total_clicks += parseFloat(key.clicks);
+          else {
+            total_clicks += parseFloat(0);
+          }
+
+          if (key.impressions !== undefined)
+            total_impressions += parseFloat(key.impressions);
+          else {
+            total_impressions += parseFloat(0);
+          }
+
+          if (key.reach !== undefined) total_reach += parseFloat(key.reach);
+          else {
+            total_reach += parseFloat(0);
+          }
+
+          if (key.clicks !== undefined) total_clicks += parseFloat(key.clicks);
+          else {
+            total_clicks += parseFloat(0);
+          }
+
+          if (key.impressions !== undefined)
+            total_impressions += parseFloat(key.impressions);
+          else {
+            total_impressions += parseFloat(0);
+          }
+
+          if (key.reach !== undefined) total_reach += parseFloat(key.reach);
+          else {
+            total_reach += parseFloat(0);
+          }
+
           var date_start = key.date_start.toString();
           var date_stop = key.date_stop.toString();
           label.push(key.date_start.toString());
         });
+
+        //Assign the scorecard sum
+        this.statsCards_a[0]["value"] = total_impressions.toLocaleString();
+        this.statsCards_a[1]["value"] = total_clicks.toLocaleString();
+        this.statsCards_a[2]["value"] =
+          (total_clicks / total_impressions).toLocaleString() + "%";
+
+        this.statsCards_b[0]["value"] = total_impressions.toLocaleString();
+        this.statsCards_b[1]["value"] = total_clicks.toLocaleString();
+        this.statsCards_b[2]["value"] =
+          (total_clicks / total_impressions).toLocaleString() + "%";
+
+        this.statsCards_c[0]["value"] = total_impressions.toLocaleString();
+        this.statsCards_c[1]["value"] = total_clicks.toLocaleString();
+        this.statsCards_c[2]["value"] =
+          (total_clicks / total_impressions).toLocaleString() + "%";
 
         bigChartData.push(cpc);
         bigChartData.push(cpm);

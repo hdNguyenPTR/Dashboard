@@ -4,15 +4,16 @@
     <p class="category text-center">
       Simple yet flexible JavaScript charting for designers &amp; developers.
       Made by our friends from
-      <a target="_blank" rel="noopener" href="https://vue-chartjs.org/"
-        >Vue Charts.js</a
-      >. Please check
+      <a
+        target="_blank"
+        rel="noopener"
+        href="https://vue-chartjs.org/"
+      >Vue Charts.js</a>. Please check
       <a
         target="_blank"
         rel="noopener"
         href="https://vue-chartjs.org/guide/#vue-single-file-components"
-        >the full documentation</a
-      >.
+      >the full documentation</a>.
     </p>
     <div class="row mt-5">
       <div class="col-md-5 ml-auto">
@@ -20,7 +21,7 @@
           <template slot="header">
             <h5 class="card-category">Simple With Gradient</h5>
             <h3 class="card-title">
-              <i class="tim-icons icon-chart-bar-32 text-primary "></i> 10,000
+              <i class="tim-icons icon-chart-bar-32 text-primary"></i> 10,000
             </h3>
           </template>
           <div class="chart-area">
@@ -30,8 +31,7 @@
               :gradient-stops="lineChart1.gradientStops"
               :extra-options="lineChart1.extraOptions"
               :height="200"
-            >
-            </line-chart>
+            ></line-chart>
           </div>
         </card>
       </div>
@@ -41,7 +41,7 @@
           <template slot="header">
             <h5 class="card-category">With Numbers and Grid</h5>
             <h3 class="card-title">
-              <i class="tim-icons icon-send text-info "></i> 750,000€
+              <i class="tim-icons icon-send text-info"></i> 750,000€
             </h3>
           </template>
           <div class="chart-area">
@@ -50,8 +50,7 @@
               :chart-data="lineChart2.chartData"
               :extra-options="lineChart2.extraOptions"
               :height="200"
-            >
-            </line-chart>
+            ></line-chart>
           </div>
         </card>
       </div>
@@ -62,7 +61,7 @@
           <template slot="header">
             <h5 class="card-category">Gradient Bar Chart</h5>
             <h3 class="card-title">
-              <i class="tim-icons icon-shape-star text-danger "></i> 1,000,000£
+              <i class="tim-icons icon-shape-star text-danger"></i> 1,000,000£
             </h3>
           </template>
           <div class="chart-area">
@@ -72,8 +71,7 @@
               :gradient-colors="barChart1.gradientColors"
               :gradient-stops="barChart1.gradientStops"
               :height="200"
-            >
-            </bar-chart>
+            ></bar-chart>
           </div>
         </card>
       </div>
@@ -83,7 +81,7 @@
           <template slot="header">
             <h5 class="card-category">Multiple Bars Chart With Grid</h5>
             <h3 class="card-title">
-              <i class="tim-icons icon-time-alarm text-warning "></i> 130,000$
+              <i class="tim-icons icon-time-alarm text-warning"></i> 130,000$
             </h3>
           </template>
           <div class="chart-area">
@@ -91,8 +89,7 @@
               :chart-data="barChart2.chartData"
               :extra-options="barChart2.extraOptions"
               :height="200"
-            >
-            </bar-chart>
+            ></bar-chart>
           </div>
         </card>
       </div>
@@ -110,14 +107,13 @@
                   :chart-data="pieChart1.chartData"
                   :extra-options="pieChart1.extraOptions"
                   :height="120"
-                >
-                </pie-chart>
+                ></pie-chart>
               </div>
             </div>
 
             <div class="col-6">
               <h4 class="card-title">
-                <i class="tim-icons  icon-trophy text-success "></i> 10.000$
+                <i class="tim-icons icon-trophy text-success"></i> 10.000$
               </h4>
               <p class="category">A total of $54000</p>
             </div>
@@ -136,14 +132,13 @@
                   :chart-data="pieChart2.chartData"
                   :extra-options="pieChart2.extraOptions"
                   :height="120"
-                >
-                </pie-chart>
+                ></pie-chart>
               </div>
             </div>
 
             <div class="col-6">
               <h4 class="card-title">
-                <i class="tim-icons  icon-tag text-warning "></i> 130,000
+                <i class="tim-icons icon-tag text-warning"></i> 130,000
               </h4>
               <p class="category">Feedback from 20.000 users</p>
             </div>
@@ -154,11 +149,11 @@
   </div>
 </template>
 <script>
-import LineChart from 'src/components/Charts/LineChart';
-import BarChart from 'src/components/Charts/BarChart';
-import PieChart from 'src/components/Charts/PieChart';
-import config from '@/config';
-import * as chartConfigs from '@/components/Charts/config';
+import LineChart from "src/components/Charts/LineChart";
+import BarChart from "src/components/Charts/BarChart";
+import PieChart from "src/components/Charts/PieChart";
+import config from "@/config";
+import * as chartConfigs from "@/components/Charts/config";
 
 export default {
   components: {
@@ -170,18 +165,18 @@ export default {
     return {
       lineChart1: {
         chartData: {
-          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
           datasets: [
             {
-              label: 'Data',
+              label: "Data",
               fill: true,
               borderColor: config.colors.primary,
               borderWidth: 2,
               borderDash: [],
               borderDashOffset: 0.0,
               pointBackgroundColor: config.colors.primary,
-              pointBorderColor: 'rgba(255,255,255,0)',
-              pointHoverBackgroundColor: '#be55ed',
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: "#be55ed",
               pointBorderWidth: 20,
               pointHoverRadius: 4,
               pointHoverBorderWidth: 15,
@@ -196,18 +191,18 @@ export default {
       },
       lineChart2: {
         chartData: {
-          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
           datasets: [
             {
-              label: 'Data',
+              label: "Data",
               fill: true,
               borderColor: config.colors.info,
               borderWidth: 2,
               borderDash: [],
               borderDashOffset: 0.0,
               pointBackgroundColor: config.colors.info,
-              pointBorderColor: 'rgba(255,255,255,0)',
-              pointHoverBackgroundColor: '#2380f7',
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: "#2380f7",
               pointBorderWidth: 20,
               pointHoverRadius: 4,
               pointHoverBorderWidth: 15,
@@ -220,10 +215,10 @@ export default {
       },
       barChart1: {
         chartData: {
-          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
           datasets: [
             {
-              label: 'Data',
+              label: "Data",
               fill: true,
               borderColor: config.colors.danger,
               borderWidth: 2,
@@ -239,10 +234,10 @@ export default {
       },
       barChart2: {
         chartData: {
-          labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+          labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
           datasets: [
             {
-              label: 'Data',
+              label: "Data",
               fill: true,
               backgroundColor: config.colors.orange,
               hoverBackgroundColor: config.colors.orange,
@@ -253,7 +248,7 @@ export default {
               data: [80, 100, 70, 80, 120, 80]
             },
             {
-              label: 'Data',
+              label: "Data",
               fill: true,
               backgroundColor: config.colors.info,
               hoverBackgroundColor: config.colors.info,
@@ -272,10 +267,10 @@ export default {
           labels: [1, 2],
           datasets: [
             {
-              label: 'Emails',
+              label: "Emails",
               pointRadius: 0,
               pointHoverRadius: 0,
-              backgroundColor: ['#00c09d', '#e2e2e2'],
+              backgroundColor: ["#00c09d", "#e2e2e2"],
               borderWidth: 0,
               data: [60, 40]
             }
@@ -288,10 +283,10 @@ export default {
           labels: [1, 2, 3],
           datasets: [
             {
-              label: 'Emails',
+              label: "Emails",
               pointRadius: 0,
               pointHoverRadius: 0,
-              backgroundColor: ['#ff8779', '#2a84e9', '#e2e2e2'],
+              backgroundColor: ["#ff8779", "#2a84e9", "#e2e2e2"],
               borderWidth: 0,
               data: [60, 40, 20]
             }
